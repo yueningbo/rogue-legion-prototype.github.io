@@ -1,0 +1,262 @@
+
+/* 自定义基础样式 */
+body {
+    background-color: #1a202c;
+    /* 深色背景 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 单位通用样式 */
+.unit {
+    /* 可以给单位本身加个背景色或渐变 */
+    background: radial-gradient(ellipse at bottom, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.2) 70%);
+    border-radius: 4px;
+    /* 轻微圆角 */
+    padding-bottom: 5px;
+    /* 为血条留出空间 */
+    position: absolute;
+    /* 确保状态图标能相对定位 */
+    transition: transform 0.1s ease-in-out;
+    /* 为可能的交互做准备 */
+}
+
+.player-unit {
+    /* 可选: 玩家单位特殊样式 */
+}
+
+.enemy-unit {
+    /* 可选: 敌人单位特殊样式 */
+    background: radial-gradient(ellipse at bottom, rgba(255, 100, 100, 0.1) 0%, rgba(50, 0, 0, 0.2) 70%);
+}
+
+
+/* 血条样式 */
+.health-bar {
+    width: 80%;
+    /* 血条宽度相对于父元素 (unit div) */
+    height: 5px;
+    /* 血条高度 */
+    background-color: #4a5568;
+    /* 血条背景色 (灰色) */
+    border: 1px solid #1a202c;
+    /* 细边框 */
+    border-radius: 2px;
+    /* 轻微圆角 */
+    overflow: hidden;
+    /* 隐藏内部溢出 */
+    margin-top: 1px;
+    /* 与图标的距离 */
+}
+
+.health-bar-inner {
+    height: 100%;
+    background-color: #48bb78;
+    /* 血条颜色 (绿色) */
+    transition: width 0.3s ease-in-out;
+    /* 平滑过渡 (如果用 JS 更新宽度) */
+    border-radius: 1px;
+}
+
+/* 敌人血条使用不同颜色 */
+.health-bar.enemy .health-bar-inner {
+    background-color: #f56565;
+    /* 红色 */
+}
+
+/* 简单的打击特效动画 (示例) */
+@keyframes hit-effect {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+/* 新增: 弹道样式 (简单线条) */
+.projectile {
+    position: absolute;
+    width: 15px;
+    /* 长度 */
+    height: 1px;
+    /* 粗细 */
+    background-color: #f0e68c;
+    /* 颜色 (卡其色/亮黄) */
+    opacity: 0.8;
+    transform-origin: left center;
+    /* 以左侧中心为旋转点 */
+}
+
+.projectile.arrow {
+    /* 可以添加箭头头部 */
+    /* background-color: #cd853f; */
+    /* 棕色箭头? */
+}
+
+/* 新增: 状态图标样式 */
+.status-icon {
+    position: absolute;
+    /* top/left/right/bottom 在 HTML 中通过 style 设置 */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* 半透明背景使其更易读 */
+    padding: 0 1px;
+    border-radius: 3px;
+}
+
+/* 游戏容器样式 */
+#app-container {
+    width: 90vw;
+    /* 基础宽度 */
+    max-width: 1280px;
+    /* 最大宽度 */
+    aspect-ratio: 16 / 9;
+    /* 保持16:9 */
+    background-color: #2d3748;
+    /* 容器背景 */
+    border: 1px solid #4a5568;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    /* 隐藏溢出内容 */
+    position: relative;
+    /* 用于绝对定位内部元素 */
+    color: #e2e8f0;
+    /* 默认文字颜色 */
+    display: flex;
+    /* 使用 Flexbox 布局 */
+    flex-direction: column;
+    /* 纵向排列 */
+}
+
+/* 屏幕基础样式 */
+.screen {
+    display: none;
+    /* 默认隐藏所有屏幕 */
+    flex-grow: 1;
+    /* 占据所有可用空间 */
+    overflow-y: auto;
+    /* 如果内容过多则允许滚动 */
+    padding: 1.5rem 2rem;
+    /* 内边距 (使用 rem) */
+    box-sizing: border-box;
+}
+
+/* 当前活动屏幕 */
+.screen.active {
+    display: flex;
+    /* 显示活动屏幕 (设为 flex 以便内部布局) */
+    flex-direction: column;
+    /* 屏幕内部也是纵向排列 */
+}
+
+/* 基础按钮样式 (Tailwind 会处理大部分，这里可以加一些通用覆盖) */
+button {
+    cursor: pointer;
+    /* Tailwind 类会提供更好的样式 */
+}
+
+#screen-roster .flex-grow {
+    /* 选择那个设置了 overflow-y-auto 的 div */
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.02) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.02) 50%, rgba(255, 255, 255, 0.02) 75%, transparent 75%, transparent);
+    background-size: 20px 20px;
+    /* 图案大小 */
+}
+
+/* 特定元素的微调 (如果 Tailwind 不够用) */
+.round-card ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.round-card li {
+    margin-bottom: 0.25rem;
+}
+
+/* 敌人列表项间距 */
+.boss-text {
+    color: #f56565;
+    font-weight: bold;
+}
+
+/* Boss 文本颜色 */
+[data-tooltip] {
+    position: relative;
+    /* 保持不变 */
+    cursor: default;
+}
+
+/* CSS Tooltip 样式 (恢复水平居中，保持向下弹出) */
+[data-tooltip] {
+position: relative;
+cursor: default;
+}
+
+/* Tooltip 文本样式 */
+[data-tooltip]::before,
+[data-tooltip]::after {
+position: absolute;
+/* !! 恢复水平居中 !! */
+left: 50%;
+transform: translateX(-50%);
+opacity: 0;
+visibility: hidden;
+pointer-events: none;
+transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+z-index: 9999;
+white-space: nowrap; /* 先尝试不换行，让它撑开宽度 */
+}
+
+/* Tooltip 内容框 */
+[data-tooltip]::before {
+content: attr(data-tooltip);
+background-color: rgba(30, 41, 59, 0.95);
+color: #cbd5e0;
+font-size: 0.75rem; /* text-xs */
+padding: 0.4rem 0.8rem;
+border-radius: 0.25rem;
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+/* 保持 max-width */
+max-width: 300px;
+/* !! 暂时移除 white-space: normal，让内容尝试不换行 !! */
+/* white-space: normal; */
+text-align: left;
+/* !! 保持向下定位 !! */
+top: 105%;
+}
+
+/* Tooltip 小三角 (指向上方) */
+[data-tooltip]::after {
+content: '';
+border-style: solid;
+border-width: 5px;
+border-color: transparent transparent rgba(30, 41, 59, 0.95) transparent;
+/* 水平居中对齐 */
+left: 50%;
+transform: translateX(-50%); /* 确保三角也居中 */
+/* !! 保持向下定位 !! */
+top: calc(105% - 5px);
+}
+
+/* 悬浮时显示 Tooltip (保持不变) */
+[data-tooltip]:hover::before,
+[data-tooltip]:hover::after {
+opacity: 1;
+visibility: visible;
+}
+
+/* 新增: 用于向左移动消耗品区域 */
+.shift-consumables-left {
+    position: relative; /* 启用相对定位 */
+    left: -20px;       /* 相对于其原本位置向左移动 30px */
+}
